@@ -3,7 +3,7 @@
 set -ev
 
 # Run It!
-exec /usr/bin/java -jar \
+exec su socrata -c /usr/bin/java -jar \
     -Dconfig.resource=$TICKER_TAPE_CONFIG \
     -Dlog4j.configuration=$TICKER_TAPE_LOG4J \
     $TICKER_TAPE_ARTIFACT
