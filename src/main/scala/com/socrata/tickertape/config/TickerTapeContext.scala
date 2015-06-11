@@ -1,6 +1,6 @@
 package com.socrata.tickertape.config
 
-import com.typesafe.config._
+import com.typesafe.config.{ConfigFactory, Config}
 
 /**
  * Default configuration library.

@@ -4,3 +4,4 @@ TickerTape.iws
 *.cache
 project/target
 target
+*.jar

@@ -1,3 +1,0 @@
-DATA_DIR=/tmp/metrics
-SLEEP_TIME=1000
-BATCH_SIZE=100
