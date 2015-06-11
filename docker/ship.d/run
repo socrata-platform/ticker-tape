@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -ev
+
+# Run It!
+exec /usr/bin/java -jar \
+    -Dconfig.resource=$TICKER_TAPE_CONFIG \
+    -Dlog4j.configuration=$TICKER_TAPE_CONFIG \
+    $BALBOA_ARTIFACT

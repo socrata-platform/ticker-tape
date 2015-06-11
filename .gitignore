@@ -1,0 +1,6 @@
+TickerTape.ipr
+TickerTape.iws
+*.class
+*.cache
+project/target
+target
