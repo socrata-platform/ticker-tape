@@ -1,8 +1,5 @@
 FROM socrata/java
 
-### Map Docker environment variables to Application configuration.
-ENV TICKER_TAPE_DATA_DIRECTORY $METRICS_DIR
-
 ### Environment Variables
 ENV TICKER_TAPE_ROOT /srv/ticker-tape
 ENV TICKER_TAPE_ARTIFACT ticker-tape-assembly.jar
