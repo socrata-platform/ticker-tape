@@ -1,6 +1,7 @@
 
 clean:
 	sbt clean
+	rm -f docker/ticker-tape-assembly.jar
 
 assembly:
 	sbt +assembly
