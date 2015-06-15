@@ -1,14 +1,8 @@
 #!/bin/sh
 
-env
-
 set -ev
 
-echo $METRICS_DIR
-
 export TICKER_TAPE_DATA_DIRECTORY=$METRICS_DIR
-
-echo $TICKER_TAPE_DATA_DIRECTORY
 
 # Run It!
 exec su socrata -c "/usr/bin/java -jar \
