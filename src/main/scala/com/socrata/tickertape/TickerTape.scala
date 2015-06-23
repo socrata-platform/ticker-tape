@@ -14,9 +14,13 @@ class TickerTape(config: TickerTapeConfig) extends Runnable {
 
   private val queue = MetricFileQueue.getInstance(config.dataDirectory.getAbsolutePath, "")
 
-  override def run(): Unit = 0 until config.batchSize foreach { i =>
+  override def run(): Unit = {
     logger debug s"Writing ${config.batchSize} metrics"
-    queue.create(config.metricsEntityId, Fluff(s"fake-metric-$i"), 1)
+    val startTime = System.currentTimeMillis()
+    0 until config.batchSize foreach { i =>
+      queue.create(config.metricsEntityId, Fluff(s"fake-metric-$i"), 1)
+    }
+    logger debug s"Completed emitting ${config.batchSize} metrics in ${System.currentTimeMillis() - startTime} ms"
   }
 
 }
