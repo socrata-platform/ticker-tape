@@ -16,10 +16,7 @@ class TickerTape(config: TickerTapeConfig) extends Runnable {
 
   override def run(): Unit = 0 until config.batchSize foreach { i =>
     logger debug s"Writing ${config.batchSize} metrics"
-    0 until config.batchSize foreach { i =>
-      queue.create(config.metricsEntityId, Fluff(s"fake-metric-$i"), 1)
-    }
-    logger debug s"Sleeping ${config.sleepTime} milliseconds"
+    queue.create(config.metricsEntityId, Fluff(s"fake-metric-$i"), 1)
   }
 
 }
