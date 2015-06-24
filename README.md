@@ -16,6 +16,7 @@ Provide an example of how to build this project.
 
 ```
 sbt assembly
+cp `ls -1t target/scala-2.10/*.jar | sed -n 1p` docker/ticker-tape-assembly.jar
 docker build --rm -t ticker-tape docker/
 # or
 make docker
@@ -23,7 +24,7 @@ make docker
 
 ## Tests
 
-Current relying on sbt test.
+Currently relying on sbt test.
 
 ```
 sbt test

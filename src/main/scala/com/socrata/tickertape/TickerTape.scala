@@ -1,43 +1,26 @@
 package com.socrata.tickertape
 
-
-import java.nio.file.Paths
-
 import com.blist.metrics.impl.queue.MetricFileQueue
-import com.socrata.metrics.{Fluff, MetricIdPart}
-import com.typesafe.config.ConfigFactory
+import com.socrata.metrics.Fluff
+import com.socrata.tickertape.config.TickerTapeConfig
 import org.slf4j.LoggerFactory
 
-object ConfigKeys {
-
-  lazy val prefix = "ticker-tape."
-  lazy val dataDir = s"${prefix}data-directory"
-  lazy val sleepTime = s"${prefix}sleep-time"
-  lazy val batchSize = s"${prefix}batch-size"
-
-}
-
-object TickerTape extends App {
+/**
+ * [[Runnable]] class that emits metrics
+ */
+class TickerTape(config: TickerTapeConfig) extends Runnable {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  private val config = ConfigFactory.load()
-  private val dataDir = Paths.get(config.getString(ConfigKeys.dataDir)).toAbsolutePath
-  private val sleepTime = config.getLong(ConfigKeys.sleepTime)
-  private val batchSize = config.getInt(ConfigKeys.batchSize)
-  private val queue = MetricFileQueue.getInstance(dataDir.toString, "")
+  private val queue = MetricFileQueue.getInstance(config.dataDirectory.getAbsolutePath, "")
 
-  logger info s"${this.getClass.getSimpleName} configured to write metrics to $dataDir"
-  logger info s"${this.getClass.getSimpleName} configured to write $batchSize metrics every $sleepTime milliseconds"
-  logger info s"Starting ${this.getClass.getSimpleName}..."
-
-  val idPart = new MetricIdPart("metrics-internal-test")
-  while (true) {
-    logger debug s"Writing $batchSize metrics"
-    0 until batchSize foreach { i =>
-      queue.create(idPart, Fluff(s"fake-metric-$i"), 1)
+  override def run(): Unit = {
+    logger debug s"Writing ${config.batchSize} metrics"
+    val startTime = System.currentTimeMillis()
+    0 until config.batchSize foreach { i =>
+      queue.create(config.metricsEntityId, Fluff(s"fake-metric-$i"), 1)
     }
-    logger debug s"Sleeping $sleepTime milliseconds"
-    Thread.sleep(sleepTime)
+    logger debug s"Completed emitting ${config.batchSize} metrics in ${System.currentTimeMillis() - startTime} ms"
   }
+
 }

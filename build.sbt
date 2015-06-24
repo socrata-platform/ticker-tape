@@ -1,7 +1,7 @@
 import Dependencies.Libraries._
 import Dependencies.Resolvers._
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
-import com.typesafe.sbt.packager.docker.{Cmd, ExecCmd}
+import com.typesafe.sbt.packager.docker.{DockerPlugin, ExecCmd}
 
 lazy val commonSettings = Seq(
   organization := "com.socrata",
