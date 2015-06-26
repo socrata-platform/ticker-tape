@@ -6,6 +6,5 @@ export TICKER_TAPE_DATA_DIRECTORY=$METRICS_DIR
 
 # Run It!
 exec su socrata -c "/usr/bin/java -jar \
-    -Dconfig.resource=$TICKER_TAPE_CONFIG \
-    -Dlog4j.configuration=$TICKER_TAPE_LOG4J \
+    -Dlog4j.logLevel=$TICKER_TAPE_LOG4J_LEVEL \
     $TICKER_TAPE_ARTIFACT"
