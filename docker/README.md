@@ -17,6 +17,8 @@ IE: 1000
 
 * TICKER_TAPE_BATCH_SIZE: Number of metrics to emit every period.
 
+* `TICKER_TAPE_LOG4J_LEVEL`: Logging level for log4j, e.g. "DEBUG". Defaults to "INFO" logging.
+
 ## Building your container
 
   `docker build -rm -t ticker-tape <path/to/ticker-tape/root>/docker/`

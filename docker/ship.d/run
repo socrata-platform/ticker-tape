@@ -4,8 +4,9 @@ set -ev
 
 export TICKER_TAPE_DATA_DIRECTORY=$METRICS_DIR
 
+# Assemble Java system properties
+JAVA_OPTS=""
+[ -n "${TICKER_TAPE_LOG4J_LEVEL}" ] && JAVA_OPTS="${JAVA_OPTS} -Dlog4j.logLevel=${TICKER_TAPE_LOG4J_LEVEL}"
+
 # Run It!
-exec su socrata -c "/usr/bin/java -jar \
-    -Dconfig.resource=$TICKER_TAPE_CONFIG \
-    -Dlog4j.configuration=$TICKER_TAPE_LOG4J \
-    $TICKER_TAPE_ARTIFACT"
+exec su socrata -c "/usr/bin/java -jar $JAVA_OPTS $TICKER_TAPE_ARTIFACT"
