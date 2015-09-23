@@ -35,10 +35,12 @@ lazy val dockerSettings = Seq(
   dockerCommands := dockerCommands.value.filterNot {
     case ExecCmd("ENTRYPOINT", _*) => true
     case ExecCmd("CMD", _*) => true
+    case ExecCmd("USER", _*) => true
     case _ => false
   } ++ Seq(
     ExecCmd("ADD", "etc", "/etc"),
     ExecCmd("RUN", "chmod", "a+x", "/etc/ship.d/run"),
+    ExecCmd("RUN", "chmod", "a+x", "/opt/docker/bin/ticker-tape"),
     ExecCmd("RUN", "chmod", "-R", "a+rX", ".")
   )
 )
