@@ -1,7 +1,7 @@
 import Dependencies.Libraries._
 import Dependencies.Resolvers._
-import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
-import com.typesafe.sbt.packager.docker.{DockerPlugin, ExecCmd}
+import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.Docker
+import com.typesafe.sbt.packager.docker._
 
 lazy val commonSettings = Seq(
   organization := "com.socrata",
@@ -17,6 +17,7 @@ lazy val root = (project in file(".")).
     resolvers += socrata_release,
     libraryDependencies ++= Seq(balboa_client)
   ).
+  enablePlugins(JavaAppPackaging).
   enablePlugins(DockerPlugin).
   settings(dockerSettings: _*)
 
@@ -27,10 +28,18 @@ lazy val root = (project in file(".")).
 
 lazy val dockerSettings = Seq(
   dockerBaseImage := "socrata/java",
-  dockerCommands ++= Seq(
-    // setting the run script executable
-    ExecCmd("RUN", "chmod", "u+x",
-      s"${(defaultLinuxInstallLocation in Docker).value}/bin/${executableScriptName.value}")
+  daemonUser in Docker := "root",
+  maintainer := "Sum Team <sum-team-l@socrata.com>",
+  mappings in Docker += file("docker/ship.d/run") -> "/etc/ship.d/run",
+
+  dockerCommands := dockerCommands.value.filterNot {
+    case ExecCmd("ENTRYPOINT", _*) => true
+    case ExecCmd("CMD", _*) => true
+    case _ => false
+  } ++ Seq(
+    ExecCmd("ADD", "etc", "/etc"),
+    ExecCmd("RUN", "chmod", "a+x", "/etc/ship.d/run"),
+    ExecCmd("RUN", "chmod", "-R", "a+rX", ".")
   )
 )
 
