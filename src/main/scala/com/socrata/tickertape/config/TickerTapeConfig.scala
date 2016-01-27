@@ -2,6 +2,7 @@ package com.socrata.tickertape.config
 
 import java.io.File
 import java.nio.file.Paths
+import scala.concurrent.duration.{FiniteDuration, Duration}
 
 import com.socrata.metrics.MetricIdPart
 import com.typesafe.config.{Config, ConfigFactory}
@@ -9,7 +10,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 /**
  * Ticker Tape configuration interface.
  */
-trait TickerTapeConfig {
+sealed trait TickerTapeConfig {
 
   /**
    * The data directory to write metrics to.
@@ -19,10 +20,9 @@ trait TickerTapeConfig {
   def dataDirectory: File
 
   /**
-   * The amount of time to sleep between batch writes.
-   * @return time in ms.
+   * The duration to sleep between batch writes/
    */
-  def sleepTime: Long
+  def sleepTime: Duration
 
   /**
    * @return The number of metrics to emit in one attempt.
@@ -56,7 +56,9 @@ private object PropertyFileConfigKeys {
 
 }
 
-case class ConfigFromTypeSafe(config: Config) extends TickerTapeConfig {
+sealed case class ConfigFromTypeSafe(config: Config) extends TickerTapeConfig {
+
+  private def asFiniteDuration(d: java.time.Duration): FiniteDuration = Duration.fromNanos(d.toNanos)
 
   config.checkValid(ConfigFactory.defaultReference(), "ticker-tape")
 
@@ -68,9 +70,31 @@ case class ConfigFromTypeSafe(config: Config) extends TickerTapeConfig {
       s"${config.getString(PropertyFileConfigKeys.dataDir)} is not an existing valid directory.")
   }
 
-  override val sleepTime: Long = config.getLong(PropertyFileConfigKeys.sleepTime)
+  override val sleepTime: FiniteDuration = asFiniteDuration(config.getDuration(PropertyFileConfigKeys.sleepTime))
 
   override val batchSize: Int = config.getInt(PropertyFileConfigKeys.batchSize)
 
   override def metricsEntityIdAsString: String = config.getString(PropertyFileConfigKeys.metricsEntityId)
+
+  override def toString: String = config.root().render()
+}
+
+object TickerTapeConfig {
+
+  /**
+    * Utilizes the default ConfigFactory.load method that typesafe config provides.
+    *
+    * @return The TickerTape Config
+    */
+  def apply() = ConfigFromTypeSafe(ConfigFactory.load())
+
+  /**
+    * Allows external users to compose an external TypeSafe Config object.  TickerTapeConfig
+    * will validate if the configuration object passed in will be valid.
+    *
+    * @param config Config object to be used for Typesafe
+    * @return
+    */
+  def apply(config: Config) = ConfigFromTypeSafe(config)
+
 }

@@ -6,7 +6,14 @@ lazy val commonSettings = Seq(
   organization := "com.socrata",
   version := "0.1.0",
   scalaVersion := "2.10.5",
-  libraryDependencies ++= Seq(scala_logging, slf4j_log4j, log4j, typesafe_config, joda_time, joda_convert)
+  libraryDependencies ++= Seq(
+    scala_logging,
+    slf4j_log4j,
+    log4j,
+    typesafe_config,
+    joda_time,
+    joda_convert
+  )
 ) ++ Seq( // For now, ignore some socrata sbt plugin things that generally we should not.
   StylePlugin.StyleKeys.styleFailOnError in Compile := false,
   // TODO: enable coverage build failures

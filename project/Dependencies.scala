@@ -4,6 +4,7 @@ object Dependencies {
 
   object Libraries {
     private object versions {
+      val akka = "2.3.+"
       val balboa_client = "0.16.+"
       val typesafe_config = "1.3.0"
       val jopt_simple = "4.8"
@@ -14,6 +15,7 @@ object Dependencies {
       val joda_time = "2.1"
     }
 
+    val akka = "com.typesafe.akka" %% "akka-actor" % versions.akka
     // Logging Abstraction Layer for Scala and Java.  Using SLF4J
     val scala_logging = "com.typesafe.scala-logging" %% "scala-logging-slf4j" % versions.scala_logging
     // Logging SLF4J binding to Log4J
