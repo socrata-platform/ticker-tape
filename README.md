@@ -6,20 +6,18 @@ Ticker Tape is a continuous Scala Application that emits metrics at a controlled
 
 In order to test controlled metrics traffic.
 
-## Installation
-
-N/A
-
 ## Build
 
-Provide an example of how to build this project.
-
 ```
-sbt assembly
-cp `ls -1t target/scala-2.10/*.jar | sed -n 1p` docker/ticker-tape-assembly.jar
-docker build --rm -t ticker-tape docker/
-# or
-make docker
+# Build a docker image
+sbt docker:publishLocal 
+# To see your latest docker image
+# docker images -f "label=com.socrata.ticker-tape"
+ 
+# Stage a docker image
+sbt docker:stage
+# To see your latest staged files, look under the following path
+# /target/docker/stage
 ```
 
 ## Tests
