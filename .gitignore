@@ -5,3 +5,4 @@ TickerTape.iws
 project/target
 target
 *.jar
+marathon.properties
