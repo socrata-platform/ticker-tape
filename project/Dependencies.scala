@@ -4,8 +4,8 @@ object Dependencies {
 
   object Libraries {
     private object versions {
-      val balboa_client = "0.16.0"
-      val typesafe_config = "1.2.1"
+      val balboa_client = "0.16.+"
+      val typesafe_config = "1.3.0"
       val jopt_simple = "4.8"
       val log4j = "1.2.17"
       val scala_logging = "2.1.2"

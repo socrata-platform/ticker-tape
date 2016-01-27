@@ -3,7 +3,6 @@ package com.socrata.tickertape
 
 import java.util.concurrent.{Executors, TimeUnit}
 
-import com.blist.metrics.impl.queue.MetricFileQueue
 import com.socrata.tickertape.config.ConfigFromTypeSafe
 import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
@@ -18,7 +17,6 @@ object TickerTapeCLI extends App {
   // Abstract away configuration values from application functionality.
   private val typeSafeConfig = ConfigFactory.load()
   private val config = new ConfigFromTypeSafe(typeSafeConfig)
-  private val queue = MetricFileQueue.getInstance(config.dataDirectory.getAbsolutePath, "")
 
   // Good practice to log what the current configuration state is to catch any pesky config bugs.
   logger info s"${this.getClass.getSimpleName} configured with ${typeSafeConfig.root.render}"
