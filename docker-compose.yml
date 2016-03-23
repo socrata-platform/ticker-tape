@@ -1,0 +1,48 @@
+# Docker Compose file used to generate dockerized Ticker Tape environment.
+#
+# Prerequisites:
+# - `sbt docker:stage` : Prepare docker related at target/docker/stage.
+
+version: '2'
+
+services:
+  ticker-tape-file:
+    extends:
+      file: docker/common.yml
+      service: ticker-tape-common
+    environment:
+      TICKER_TAPE_METRIC_ENTITY_ID: "metrics-from-file"
+      BALBOA_TYPE: "file"
+      # The runit base images setsm
+      # BALBOA_FILE_DIR: "/data/metrics"
+    volumes:
+      - metrics-data:/data/metrics
+
+  ticker-tape-jms:
+    extends:
+      file: docker/common.yml
+      service: ticker-tape-common
+    environment:
+      TICKER_TAPE_METRIC_ENTITY_ID: "metrics-from-jms"
+      BALBOA_TYPE: "jms"
+      BALBOA_JMS_USER: "admin"
+      BALBOA_JMS_PASSWORD: "admin"
+      BALBOA_JMS_SERVER: "tcp://activemq:61616"
+      BALBOA_JMS_QUEUE: "Metrics2012"
+    links:
+      - activemq
+    depends_on:
+      - activemq
+
+  activemq:
+    image: webcenter/activemq
+    expose:
+     - "61616"
+    ports:
+      - "8161:8161"
+
+
+volumes:
+  metrics-data:
+
+

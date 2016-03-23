@@ -23,15 +23,16 @@ lazy val commonSettings = Seq(
   JavaFindBugsPlugin.JavaFindBugsKeys.findbugsFailOnError in Test := false
 )
 
-lazy val root = (project in file(".")).
+lazy val tickerTape = (project in file(".")).
   settings(commonSettings: _*).
   settings(
-    name := "ticker-tape",
+    name := "tickerTape",
     resolvers += socrata_release,
-    libraryDependencies ++= Seq(balboa_client)
+    libraryDependencies ++= Seq(balboa_client, balboa_client_jms)
   ).enablePlugins(JavaAppPackaging).
   enablePlugins(UniversalPlugin).
   enablePlugins(DockerPlugin).
+  enablePlugins(DebianPlugin).
   settings(dockerSettings: _*)
 
 
@@ -40,13 +41,14 @@ lazy val root = (project in file(".")).
 //////////////////////////////////////////////////////
 
 lazy val dockerSettings = Seq(
+  packageName in Docker := s"socrata/${name.value.toLowerCase}",
+  maintainer in Docker := "mission-control-l@socrata.com",
   dockerBaseImage := "socrata/java8",
-  mappings in Docker ++= Seq(
-    file("docker/ship.d/run") -> "/etc/ship.d/run" // Use our favorite ship.d/run script
-  ),
-  dockerEntrypoint := Seq("/etc/ship.d"),
-  dockerCmd := Seq("run"),
   daemonUser in Docker := "root",
+  dockerUpdateLatest in Docker := true,
+  mappings in Docker ++= Seq(
+    file("docker/run.sh") -> "/etc/ship.d/run"
+  ),
   dockerCommands := dockerCommands.value.filterNot {
     case ExecCmd("ENTRYPOINT", _*) => true
     case ExecCmd("CMD", _*) => true
@@ -55,7 +57,7 @@ lazy val dockerSettings = Seq(
     ExecCmd("ADD", "etc", "/etc"),
     ExecCmd("RUN", "chmod", "a+x", "/etc/ship.d/run"),
     ExecCmd("RUN", "chmod", "-R", "a+rX", "."),
-    Cmd("LABEL", "com.socrata.ticker-tape=")
+    Cmd("LABEL", s"com.socrata.${name.value.toLowerCase}=")
   )
 )
 
