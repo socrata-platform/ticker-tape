@@ -5,7 +5,7 @@ object Dependencies {
   object Libraries {
     private object versions {
       val akka = "2.3.+"
-      val balboa_client = "0.16.+"
+      val balboa = "0.17.+"
       val typesafe_config = "1.3.0"
       val jopt_simple = "4.8"
       val log4j = "1.2.17"
@@ -24,7 +24,8 @@ object Dependencies {
     val log4j = "log4j" % "log4j" % versions.log4j
 
     val typesafe_config = "com.typesafe" % "config" % versions.typesafe_config
-    val balboa_client = "com.socrata" %% "balboa-client" % versions.balboa_client
+    val balboa_client = "com.socrata" %% "balboa-client" % versions.balboa
+    val balboa_client_jms = "com.socrata" %% "balboa-client-jms" % versions.balboa
     val jopt_simple = "net.sf.jopt-simple" % "jopt-simple" % versions.jopt_simple
     val joda_convert = "org.joda" % "joda-convert" % versions.joda_convert
     val joda_time = "joda-time" % "joda-time" % versions.joda_time
@@ -35,6 +36,5 @@ object Dependencies {
     val socrata_release = "socrata maven" at "https://repo.socrata.com/artifactory/libs-release-local"
 
   }
-
 
 }
