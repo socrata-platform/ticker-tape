@@ -2,11 +2,9 @@
 
 set -ev
 
-# TODO Ugly dependency for the Metrics directory that may or may not be in the base image
-# Why is it ugly?
-#   Coupled with underlying knowledge of a base image that may or may not change
-#   Setting a Metrics directory argument in two places.
-# [[ -x /bin/set_metrics_dir ]] && /bin/set_metrics_dir
+# We currently depend on an environment variable set in the Socrata base image that identifies
+# which directory to write metrics to.
+# Reference: https://github.com/socrata/shipyard/blob/master/base/set_metrics_dir
 [ -n "${METRICS_DIR}" ] && export BALBOA_FILE_DIR=$METRICS_DIR
 
 # Assemble Java system properties
