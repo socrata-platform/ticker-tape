@@ -1,0 +1,11 @@
+# Common Ticker Tape docker compose file.
+
+version: '2'
+
+services:
+  ticker-tape-common:
+    build: ../target/docker/stage
+    environment:
+      TICKER_TAPE_SLEEP_TIME: "1s"
+      TICKER_TAPE_BATCH_SIZE: 1
+      TICKER_TAPE_LOG4J_LEVEL: "DEBUG"
