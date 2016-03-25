@@ -24,8 +24,8 @@ Configuration is done through environment variables when ticker-tape is run as a
 [HOCON](https://github.com/typesafehub/config/blob/master/HOCON.md) configuration provided by 
 [Typesafe Config](https://github.com/typesafehub/config).  Please refer to the 
 [reference configuration file](src/main/resources/reference.conf) as an example of the format and description of the 
-possible keys.  Please refer to [application.conf](src/main/resources/application.conf) as an example of the 
-corresponding environment variables.
+possible keys.  Please refer to [application.conf](src/main/resources/application.conf) as a reference for the appropriate 
+environment variables.
 
 ## Build
 
