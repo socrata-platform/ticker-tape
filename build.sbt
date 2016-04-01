@@ -23,10 +23,10 @@ lazy val commonSettings = Seq(
   JavaFindBugsPlugin.JavaFindBugsKeys.findbugsFailOnError in Test := false
 )
 
-lazy val tickerTape = (project in file(".")).
+lazy val `ticker-tape` = (project in file(".")).
   settings(commonSettings: _*).
   settings(
-    name := "tickerTape",
+    name := "ticker-tape",
     resolvers += socrata_release,
     libraryDependencies ++= Seq(balboa_client, balboa_client_jms)
   ).enablePlugins(JavaAppPackaging).
