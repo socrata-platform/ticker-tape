@@ -1,6 +1,5 @@
 package com.socrata.tickertape
 
-
 import java.util.concurrent.{Executors, TimeUnit}
 
 import com.socrata.tickertape.config.TickerTapeConfig
@@ -19,7 +18,8 @@ object TickerTapeCLI extends App with LazyLogging {
   logger info s"Starting ${this.getClass.getSimpleName}..."
 
   val scheduler = Executors.newScheduledThreadPool(1)
-  val future = scheduler.scheduleAtFixedRate(new TickerTape(config), 0, config.sleepTime.toMillis, TimeUnit.MILLISECONDS)
+  val future = scheduler.scheduleAtFixedRate(new TickerTape(config),
+    0, config.sleepTime.toMillis, TimeUnit.MILLISECONDS)
 
   Runtime.getRuntime.addShutdownHook(new Thread("Shutdown thread") {
     override def run(): Unit = {
