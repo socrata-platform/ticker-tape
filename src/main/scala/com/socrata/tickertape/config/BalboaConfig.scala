@@ -8,16 +8,8 @@ import com.socrata.metrics.MetricQueue
 import com.typesafe.config.Config
 import org.apache.activemq.ActiveMQConnection
 
-/**
-  * Config for Balboa MetricQueue
-  *
-  * Created by michaelhotan on 2/23/16.
-  */
 trait BalboaConfig {
-  // TODO This would be a nice to have in Balboa
-
   def queue: MetricQueue
-
 }
 
 sealed case class BalboaConfigFromTypesafe(config: Config) extends BalboaConfig {

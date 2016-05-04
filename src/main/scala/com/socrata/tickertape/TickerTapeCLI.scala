@@ -1,31 +1,40 @@
 package com.socrata.tickertape
 
-import java.util.concurrent.{Executors, TimeUnit}
-
+import com.socrata.metrics.Fluff
 import com.socrata.tickertape.config.TickerTapeConfig
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.slf4j.StrictLogging
 
-/**
- * Small entry point
- */
-object TickerTapeCLI extends App with LazyLogging {
-
-  // Abstract away configuration values from application functionality.
+object TickerTapeCLI extends StrictLogging {
   private val config = TickerTapeConfig()
 
-  // Good practice to log what the current configuration state is to catch any pesky config bugs.
-  logger info s"${this.getClass.getSimpleName} configured with $config"
-  logger info s"Starting ${this.getClass.getSimpleName}..."
+  def main(args: Array[String]): Unit = {
+    logger info s"${this.getClass.getSimpleName} configured with $config"
+    logger info s"Starting ${this.getClass.getSimpleName}..."
 
-  val scheduler = Executors.newScheduledThreadPool(1)
-  val future = scheduler.scheduleAtFixedRate(new TickerTape(config),
-    0, config.sleepTime.toMillis, TimeUnit.MILLISECONDS)
+    Runtime.getRuntime.addShutdownHook(new Thread {
+      override def run(): Unit = {
+        logger info "Closing the metrics file."
+        config.queue.close()
+      }
+    })
 
-  Runtime.getRuntime.addShutdownHook(new Thread("Shutdown thread") {
-    override def run(): Unit = {
-      logger info s"Stopping scheduled tasks that emits metrics"
-      future.cancel(true)
-      logger debug s"Successfully cancelled future tasks."
-    } // Can cancel, who really cares.
-  })
+    while (true) {
+      writeMetricsBatch()
+      Thread.sleep(config.sleepTime.toMillis)
+    }
+  }
+
+  def writeMetricsBatch(): Unit = {
+    logger info s"Writing ${config.batchSize} metrics"
+    val startTime = System.currentTimeMillis()
+    0 until config.batchSize foreach { i =>
+      val entityId = config.metricsEntityId
+      val metricName = s"fake-metric-$i"
+      val metricValue = 1
+      logger debug s"Emitting metric with Entity ID: $entityId, Name: $metricName and Value: $metricValue"
+      config.queue.create(entityId, Fluff(metricName), metricValue)
+    }
+    logger info s"Completed emitting ${config.batchSize} metrics in ${System.currentTimeMillis() - startTime} ms"
+  }
+
 }
