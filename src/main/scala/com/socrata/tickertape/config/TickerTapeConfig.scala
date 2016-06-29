@@ -1,79 +1,49 @@
 package com.socrata.tickertape.config
 
-import com.socrata.metrics.{MetricIdPart, MetricQueue}
+import com.socrata.metrics.MetricIdPart
 import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.concurrent.duration.{Duration, FiniteDuration}
 
-/**
- * Ticker Tape configuration interface.
- */
-sealed trait TickerTapeConfig {
-
-  /**
-   * The duration to sleep between batch writes/
-   */
-  def sleepTime: Duration
-
-  /**
-   * @return The number of metrics to emit in one attempt.
-   */
-  def batchSize: Int
-
-  /**
-   * @return The Metrics Entity id
-   */
-  def metricsEntityId: MetricIdPart = new MetricIdPart(metricsEntityIdAsString)
-
-  /**
-   * @return The Metric Entity ID as a String.
-   */
-  def metricsEntityIdAsString: String
-
-  /**
-    * @return Return the queue used for emitting metrics.
-    */
-  def queue: MetricQueue
-
-}
-
-/**
- * Keys for referencing [[java.util.Properties]] files.
- */
-private object PropertyFileConfigKeys {
-
-  val sleepTime = "sleep-time"
-  val batchSize = "batch-size"
-  val metricsEntityId = "metric-entity-id"
-  val balboa = "balboa"
-
-}
-
-sealed case class TickerTapeConfigFromTypesafe(config: Config) extends TickerTapeConfig {
+class TickerTapeConfig(config: Config) {
 
   private def asFiniteDuration(d: java.time.Duration): FiniteDuration = Duration.fromNanos(d.toNanos)
 
   config.checkValid(ConfigFactory.defaultReference(),
-    PropertyFileConfigKeys.sleepTime,
-    PropertyFileConfigKeys.batchSize,
-    PropertyFileConfigKeys.metricsEntityId,
-    PropertyFileConfigKeys.balboa
+    TickerTapeConfig.SleepTimeName,
+    TickerTapeConfig.BatchSizeName,
+    TickerTapeConfig.MetricsEntityIdName,
+    TickerTapeConfig.BalboaName
   )
 
   def this() = this(ConfigFactory.load())
 
-  override val sleepTime: FiniteDuration = asFiniteDuration(config.getDuration(PropertyFileConfigKeys.sleepTime))
+  /**
+   * The duration to sleep between batch writes/
+   */
+  def sleepTime: Duration = asFiniteDuration(config.getDuration(TickerTapeConfig.SleepTimeName))
 
-  override val batchSize: Int = config.getInt(PropertyFileConfigKeys.batchSize)
+  /**
+    * @return The number of metrics to emit in one attempt.
+    */
+  def batchSize: Int = config.getInt(TickerTapeConfig.BatchSizeName)
 
-  override val metricsEntityIdAsString: String = config.getString(PropertyFileConfigKeys.metricsEntityId)
+  /**
+    * @return The Metrics Entity id
+    */
+  def metricsEntityId: MetricIdPart = new MetricIdPart(config.getString(TickerTapeConfig.MetricsEntityIdName))
 
-  override val queue: MetricQueue = BalboaConfig(config.getConfig(PropertyFileConfigKeys.balboa)).queue
+  def balboa: Config = config.getConfig(TickerTapeConfig.BalboaName)
 
   override def toString: String = config.root().render()
 }
 
 object TickerTapeConfig {
+
+  val SleepTimeName = "sleep-time"
+  val BatchSizeName = "batch-size"
+  val MetricsEntityIdName = "metric-entity-id"
+  val BalboaName = "balboa"
 
   /**
     * Utilizes the default ConfigFactory.load method that typesafe config provides.
@@ -89,6 +59,6 @@ object TickerTapeConfig {
     * @param config Config object to be used for Typesafe
     * @return
     */
-  def apply(config: Config): TickerTapeConfig = TickerTapeConfigFromTypesafe(config)
+  def apply(config: Config): TickerTapeConfig = new TickerTapeConfig(config)
 
 }

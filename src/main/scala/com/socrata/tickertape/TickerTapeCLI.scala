@@ -1,7 +1,7 @@
 package com.socrata.tickertape
 
-import com.socrata.metrics.Fluff
-import com.socrata.tickertape.config.TickerTapeConfig
+import com.socrata.metrics.{MetricQueue, Fluff}
+import config.{BalboaConfig, TickerTapeConfig}
 import com.typesafe.scalalogging.slf4j.StrictLogging
 
 object TickerTapeCLI extends StrictLogging {
@@ -11,20 +11,28 @@ object TickerTapeCLI extends StrictLogging {
     logger info s"${this.getClass.getSimpleName} configured with $config"
     logger info s"Starting ${this.getClass.getSimpleName}..."
 
+    var queue = BalboaConfig(config.balboa).queue
+
     Runtime.getRuntime.addShutdownHook(new Thread {
       override def run(): Unit = {
         logger info "Closing the metrics file."
-        config.queue.close()
+        queue.close()
       }
     })
 
     while (true) {
-      writeMetricsBatch()
+      writeMetricsBatch(queue)
+
+      // Closing the MetricQueue object causes a metric file to be completed,
+      // which is necessary before balboa-agent will process it.
+      queue.close()
+      queue = BalboaConfig(config.balboa).queue
+
       Thread.sleep(config.sleepTime.toMillis)
     }
   }
 
-  def writeMetricsBatch(): Unit = {
+  def writeMetricsBatch(queue: MetricQueue): Unit = {
     logger info s"Writing ${config.batchSize} metrics"
     val startTime = System.currentTimeMillis()
     0 until config.batchSize foreach { i =>
@@ -32,7 +40,7 @@ object TickerTapeCLI extends StrictLogging {
       val metricName = s"fake-metric-$i"
       val metricValue = 1
       logger debug s"Emitting metric with Entity ID: $entityId, Name: $metricName and Value: $metricValue"
-      config.queue.create(entityId, Fluff(metricName), metricValue)
+      queue.create(entityId, Fluff(metricName), metricValue)
     }
     logger info s"Completed emitting ${config.batchSize} metrics in ${System.currentTimeMillis() - startTime} ms"
   }
