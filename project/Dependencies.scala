@@ -22,7 +22,7 @@ object Dependencies {
     val log4j = "log4j" % "log4j" % versions.log4j
 
     val typesafe_config = "com.typesafe" % "config" % versions.typesafe_config
-    val balboa_client_jms = "com.socrata" %% "balboa-client-jms" % versions.balboa
+    val balboa_client_jms = "com.socrata" %% "balboa-client-jms" % versions.balboa exclude("org.springframework", "spring-context")
     val joda_convert = "org.joda" % "joda-convert" % versions.joda_convert
     val joda_time = "joda-time" % "joda-time" % versions.joda_time
   }
