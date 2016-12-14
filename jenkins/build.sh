@@ -61,6 +61,9 @@ sbt docker:publishLocal
 
 new_image=$(docker images -f "label=com.socrata.ticker-tape" -q)
 echo "New Image: $new_image Registry: ${REGISTRY} Service: ${SERVICE} Tag: ${TAG}"
+
+set -x
+
 docker tag "${new_image}" "${REGISTRY}/internal/${SERVICE}:${TAG}"
 docker push ${REGISTRY}/internal/${SERVICE}:${TAG}
 docker rmi -f ${REGISTRY}/internal/${SERVICE}:${TAG}
