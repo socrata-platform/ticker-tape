@@ -42,7 +42,7 @@ sealed case class BalboaConfigFromTypesafe(config: Config) extends BalboaConfig 
   }
 
   private lazy val jmsServer: String = config.getString("jms.server")
-
+ 
   private lazy val jmsConnection = (jmsUser, jmsPassword) match {
     case (Some(user), Some(password)) => ActiveMQConnection.makeConnection(user, password, jmsServer)
     case _ => ActiveMQConnection.makeConnection(jmsServer)

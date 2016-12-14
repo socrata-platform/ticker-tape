@@ -61,7 +61,7 @@ sbt docker:publishLocal
 
 new_image=$(docker images -f "label=com.socrata.ticker-tape" -q)
 echo "New Image: $new_image"
-docker tag -f ${new_image} ${REGISTRY}/internal/${SERVICE}:${TAG}
+docker tag ${new_image} ${REGISTRY}/internal/${SERVICE}:${TAG}
 docker push ${REGISTRY}/internal/${SERVICE}:${TAG}
 docker rmi -f ${REGISTRY}/internal/${SERVICE}:${TAG}
 if [ -x ${DOCKER_REGISTRY_SYNC} ]; then
@@ -69,9 +69,9 @@ if [ -x ${DOCKER_REGISTRY_SYNC} ]; then
 fi
 
 # Push a latest image for development
-docker tag -f ${new_image} ${REGISTRY}/internal/${SERVICE}:latest
+docker tag ${new_image} ${REGISTRY}/internal/${SERVICE}:latest
 docker push ${REGISTRY}/internal/${SERVICE}:latest
-docker rmi -f ${REGISTRY}/internal/${SERVICE}:latest
+docker rmi ${REGISTRY}/internal/${SERVICE}:latest
 
 echo "3. Set up marathon deploy job"
 
