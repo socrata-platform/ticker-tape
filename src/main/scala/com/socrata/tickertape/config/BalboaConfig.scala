@@ -42,7 +42,7 @@ sealed case class BalboaConfigFromTypesafe(config: Config) extends BalboaConfig 
   }
 
   private lazy val jmsServer: String = config.getString("jms.server")
- 
+
   private lazy val jmsConnection = (jmsUser, jmsPassword) match {
     case (Some(user), Some(password)) => ActiveMQConnection.makeConnection(user, password, jmsServer)
     case _ => ActiveMQConnection.makeConnection(jmsServer)
@@ -57,11 +57,8 @@ sealed case class BalboaConfigFromTypesafe(config: Config) extends BalboaConfig 
     case "jms" => new MetricJmsQueue(jmsConnection, jmsQueue, jmsQueueBufferSize)
     case _ => throw new UnsupportedOperationException(s"$queueType not supported")
   }
-
 }
 
 object BalboaConfig {
-
   def apply(config: Config): BalboaConfig = BalboaConfigFromTypesafe(config)
-
 }
