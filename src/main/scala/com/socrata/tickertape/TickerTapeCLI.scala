@@ -21,12 +21,13 @@ object TickerTapeCLI extends StrictLogging {
     })
 
     while (true) {
-      writeMetricsBatch(queue)
 
-      // Closing the MetricQueue object causes a metric file to be completed,
-      // which is necessary before balboa-agent will process it.
-      queue.close()
-      queue = BalboaConfig(config.balboa).queue
+      try {
+        writeMetricsBatch(queue)
+      } finally {
+        queue.close
+        queue = BalboaConfig(config.balboa).queue
+      }
 
       Thread.sleep(config.sleepTime.toMillis)
     }
@@ -42,6 +43,7 @@ object TickerTapeCLI extends StrictLogging {
       logger debug s"Emitting metric with Entity ID: $entityId, Name: $metricName and Value: $metricValue"
       queue.create(entityId, Fluff(metricName), metricValue)
     }
+
     logger info s"Completed emitting ${config.batchSize} metrics in ${System.currentTimeMillis() - startTime} ms"
   }
 

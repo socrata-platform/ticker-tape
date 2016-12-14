@@ -26,7 +26,6 @@ lazy val `ticker-tape` = (project in file("."))
     // from there. While Java 7 is transitioning out of wide spread use, it is
     // useful to compile the project in the older byte-code so it can be run on
     // whatever JVM is present.
-    javacOptions ++= Seq("-source", "1.7", "-target", "1.7", "-Xlint"),
     // Disallow the Java 7 compiler. When Java 9 is available, this can be
     // expanded.
     initialize := {
