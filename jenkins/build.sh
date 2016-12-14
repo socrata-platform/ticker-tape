@@ -68,7 +68,7 @@ docker tag "${new_image}" "${REGISTRY}/internal/${SERVICE}:${TAG}"
 docker push ${REGISTRY}/internal/${SERVICE}:${TAG}
 docker rmi -f ${REGISTRY}/internal/${SERVICE}:${TAG}
 if [ -x ${DOCKER_REGISTRY_SYNC} ]; then
-    ${DOCKER_REGISTRY_SYNC} -p $HTTP_PROXY -s $DOCKER_REGISTRY_SOURCE -t $DOCKER_REGISTRY_TARGETS -q $DOCKER_REGISTRY_QUEUE queue-sync internal/${SERVICE}:${TAG}
+    ${DOCKER_REGISTRY_SYNC} -s "$DOCKER_REGISTRY_SOURCE" -t "$DOCKER_REGISTRY_TARGETS" -q "$DOCKER_REGISTRY_QUEUE" queue-sync internal/${SERVICE}:${TAG}
 fi
 
 # Push a latest image for development
