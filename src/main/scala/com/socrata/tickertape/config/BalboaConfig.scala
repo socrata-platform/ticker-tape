@@ -3,7 +3,7 @@ package com.socrata.tickertape.config
 import java.io.File
 import java.nio.file.Paths
 
-import com.blist.metrics.impl.queue.{MetricJmsQueue, MetricJmsQueueNotSingleton, MetricFileQueue}
+import com.blist.metrics.impl.queue.{MetricJmsQueue, MetricFileQueue}
 import com.socrata.metrics.MetricQueue
 import com.typesafe.config.Config
 import org.apache.activemq.ActiveMQConnection
