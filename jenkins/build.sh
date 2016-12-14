@@ -50,7 +50,7 @@ fi
 
 echo "2. build the image and publish to the local docker daemon"
 
-existing_images=$(docker images -f "label=com.socrata.ticker-tape" -q)
+existing_images=$(docker images -f "label=com.socrata.ticker-tape" -q | sort | uniq)
 if [ "${existing_images}" != "" ]; then
   echo "2a. Remove all existing images"
   docker rmi -f $existing_images
