@@ -59,7 +59,7 @@ fi
 echo "2b. Publish to the local docker daemon."
 sbt docker:publishLocal
 
-new_image=$(docker images -f "label=com.socrata.ticker-tape" -q)
+new_image=$(docker images -f "label=com.socrata.ticker-tape" -q | head -n1)
 echo "New Image: $new_image Registry: ${REGISTRY} Service: ${SERVICE} Tag: ${TAG}"
 
 set -x
