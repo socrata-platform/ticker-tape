@@ -11,4 +11,4 @@ set -ev
 [ -n "${TICKER_TAPE_LOG4J_LEVEL}" ] && JAVA_OPTS="${JAVA_OPTS} -Dlog4j.logLevel=${TICKER_TAPE_LOG4J_LEVEL}"
 
 # Run It!
-exec sudo -Eu socrata /opt/docker/bin/tickertape
+exec sudo -Eu socrata /opt/docker/bin/ticker-tape

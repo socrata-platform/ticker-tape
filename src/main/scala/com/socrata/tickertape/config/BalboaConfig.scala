@@ -3,7 +3,7 @@ package com.socrata.tickertape.config
 import java.io.File
 import java.nio.file.Paths
 
-import com.blist.metrics.impl.queue.{MetricJmsQueueNotSingleton, MetricFileQueue}
+import com.blist.metrics.impl.queue.{MetricJmsQueue, MetricFileQueue}
 import com.socrata.metrics.MetricQueue
 import com.typesafe.config.Config
 import org.apache.activemq.ActiveMQConnection
@@ -50,17 +50,15 @@ sealed case class BalboaConfigFromTypesafe(config: Config) extends BalboaConfig 
 
   private lazy val jmsQueue: String = config.getString("jms.queue")
 
+  private lazy val jmsQueueBufferSize: Int = config.getInt("jms.buffer-size")
 
   override def queue: MetricQueue = queueType match {
     case "file" => new MetricFileQueue(fileQueueDirectory)
-    case "jms" => new MetricJmsQueueNotSingleton(jmsConnection, jmsQueue)
+    case "jms" => new MetricJmsQueue(jmsConnection, jmsQueue, jmsQueueBufferSize)
     case _ => throw new UnsupportedOperationException(s"$queueType not supported")
   }
-
 }
 
 object BalboaConfig {
-
   def apply(config: Config): BalboaConfig = BalboaConfigFromTypesafe(config)
-
 }

@@ -50,7 +50,7 @@ fi
 
 echo "2. build the image and publish to the local docker daemon"
 
-existing_images=$(docker images -f "label=com.socrata.ticker-tape" -q)
+existing_images=$(docker images -f "label=com.socrata.ticker-tape" -q | sort | uniq)
 if [ "${existing_images}" != "" ]; then
   echo "2a. Remove all existing images"
   docker rmi -f $existing_images
@@ -59,18 +59,22 @@ fi
 echo "2b. Publish to the local docker daemon."
 sbt docker:publishLocal
 
-new_image=$(docker images -f "label=com.socrata.ticker-tape" -q)
-docker tag -f ${new_image} ${REGISTRY}/internal/${SERVICE}:${TAG}
+new_image=$(docker images -f "label=com.socrata.ticker-tape" -q | head -n1)
+echo "New Image: $new_image Registry: ${REGISTRY} Service: ${SERVICE} Tag: ${TAG}"
+
+set -x
+
+docker tag "${new_image}" "${REGISTRY}/internal/${SERVICE}:${TAG}"
 docker push ${REGISTRY}/internal/${SERVICE}:${TAG}
 docker rmi -f ${REGISTRY}/internal/${SERVICE}:${TAG}
 if [ -x ${DOCKER_REGISTRY_SYNC} ]; then
-    ${DOCKER_REGISTRY_SYNC} -p $HTTP_PROXY -s $DOCKER_REGISTRY_SOURCE -t $DOCKER_REGISTRY_TARGETS -q $DOCKER_REGISTRY_QUEUE queue-sync internal/${SERVICE}:${TAG}
+    ${DOCKER_REGISTRY_SYNC} -s "$DOCKER_REGISTRY_SOURCE" -t "$DOCKER_REGISTRY_TARGETS" -q "$DOCKER_REGISTRY_QUEUE" queue-sync internal/${SERVICE}:${TAG}
 fi
 
 # Push a latest image for development
-docker tag -f ${new_image} ${REGISTRY}/internal/${SERVICE}:latest
+docker tag ${new_image} ${REGISTRY}/internal/${SERVICE}:latest
 docker push ${REGISTRY}/internal/${SERVICE}:latest
-docker rmi -f ${REGISTRY}/internal/${SERVICE}:latest
+docker rmi ${REGISTRY}/internal/${SERVICE}:latest
 
 echo "3. Set up marathon deploy job"
 
