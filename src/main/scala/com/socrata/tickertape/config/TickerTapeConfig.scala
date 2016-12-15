@@ -33,6 +33,8 @@ class TickerTapeConfig(config: Config) {
     */
   def metricsEntityId: MetricIdPart = new MetricIdPart(config.getString(TickerTapeConfig.MetricsEntityIdName))
 
+  def uniqueEntityIds: Int = config.getInt(TickerTapeConfig.UniqueEntityIdsName)
+
   def balboa: Config = config.getConfig(TickerTapeConfig.BalboaName)
 
   override def toString: String = config.root().render()
@@ -44,6 +46,7 @@ object TickerTapeConfig {
   val BatchSizeName = "batch-size"
   val MetricsEntityIdName = "metric-entity-id"
   val BalboaName = "balboa"
+  val UniqueEntityIdsName = "unique-entity-ids"
 
   /**
     * Utilizes the default ConfigFactory.load method that typesafe config provides.
