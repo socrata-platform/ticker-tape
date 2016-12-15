@@ -46,7 +46,7 @@ object TickerTapeCLI extends StrictLogging {
       }
     }
 
-    logger info s"Completed emitting ${config.batchSize} metrics in ${System.currentTimeMillis() - startTime} ms"
+    logger info s"Completed emitting ${config.batchSize * config.uniqueEntityIds} metrics in ${System.currentTimeMillis() - startTime} ms"
   }
 
 }
