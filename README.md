@@ -107,3 +107,5 @@ $ sbt test
 [Socrata Inc](www.socrata.com)
 
 ## License
+
+Pfffft license.
